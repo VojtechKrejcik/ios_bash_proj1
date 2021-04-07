@@ -1,0 +1,157 @@
+#Projekt IOS - 2020
+#author: Vojtech Krejcik (xkrejc68) 
+#!/bin/sh
+
+
+#zpracovani argumentu
+while getopts "i:n" o; do
+	case "$o" in
+		n) ;;
+		i) ;;
+	esac
+done
+shift $(($OPTIND - 1))
+
+if [ -z "$@" ] ; then
+	file=$PWD
+elif [ -d "$@" ]; then
+	file=$@
+else
+	echo "Not a directory"
+	exit 1
+fi
+#inicializace promenych
+numberOfFiles=0
+directories=0
+ten=0
+kilo=0
+tenk=0
+hundredk=0
+mega=0
+tenm=0
+hundredm=0
+giga=0
+morethengiga=0
+
+#spocitani slozek
+files_tmp=$(find $file -type d | while read dir; do echo "1"; done)
+for i in $files_tmp; do
+	numberOfDirs=$((numberOfDirs+1))
+done
+
+#ziskani hodnot histogramu
+sizes=$(find $file -type f | while read dir; do wc -c "$dir" | awk '{print $1}'; done)
+for size in $sizes; do
+	allfiles=$((allfiles+1))
+	if [ $size -lt 100 ]
+       	then	
+		ten=$((ten+1))
+	elif [ $size -lt 1000 ]
+	then
+		kilo=$((kilo+1)) 
+	elif [ $size -lt 10000 ]
+	then
+		tenk=$((tenk+1)) 
+	elif [ $size -lt 100000 ]
+	then
+		hundredk=$((hundredk+1)) 
+	elif [ $size -lt 1000000 ]
+	then
+		mega=$((mega+1)) 
+	elif [ $size -lt 10000000 ]
+	then
+		tenm=$((tenm+1)) 
+	elif [ $size -lt 100000000 ]
+	then
+		hundredm=$((hundredm+1)) 
+	elif [ $size -lt 1000000000 ]
+	then
+		giga=$((giga+1)) 
+	else
+		morethengiga=$((morethengiga+1)) 
+	fi
+
+done
+
+
+
+
+
+#===================Vypis=======================================#
+echo "Root directory: $file"
+echo "Directories: $numberOfDirs"
+printf "All files: $allfiles\n"
+printf "File size histogram:\n"
+#
+printf "  <100 B  : "
+
+for i in `seq 1 $ten`; do
+	printf "#"
+done
+printf "\n"
+
+
+#-----------------------------------------------------------------#
+printf "  <1 KiB  : "
+
+for i in `seq 1 $kilo`; do
+	printf "#"
+done
+printf "\n"
+
+#-----------------------------------------------------------------#
+printf "  <10 KiB : "
+
+for i in `seq 1 $tenk`; do
+	printf "#"
+done
+printf "\n"
+
+#-----------------------------------------------------------------#
+printf "  <100 KiB: "
+
+for i in `seq 1 $hundredk`; do
+	printf "#"
+done
+printf "\n"
+
+#-----------------------------------------------------------------#
+printf "  <1 Mib  : "
+
+for i in `seq 1 $mega`; do
+	printf "#"
+done
+printf "\n"
+
+#-----------------------------------------------------------------#
+printf "  <10 MiB : "
+
+for i in `seq 1 $tenm`; do
+	printf "#"
+done
+printf "\n"
+
+#-----------------------------------------------------------------#
+printf "  <100 MiB: "
+
+for i in `seq 1 $hundredm`; do
+	printf "#"
+done
+printf "\n"
+
+#-----------------------------------------------------------------#
+printf "  <1 GiB  : "
+
+for i in `seq 1 $giga`; do
+	printf "#"
+done
+printf "\n"
+
+#-----------------------------------------------------------------#
+printf "  >=1 Gib : "
+
+	for i in `seq 1 $morethengiga`; do
+	printf "#"
+done
+printf "\n"
+
